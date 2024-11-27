@@ -1,0 +1,159 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model users {
+  idUser     Int        @id @default(autoincrement())
+  username   String
+  firstName  String
+  middleName String?
+  lastName   String
+  curp       String
+  email      String
+  students   students[]
+  advisors   advisors[]
+
+  @@unique([username], name: "unique_username")
+  @@unique([curp], name: "unique_curp")
+}
+
+model students {
+  idStudent        Int                @id @default(autoincrement())
+  idUser           Int
+  controlNumber    String
+  user             users              @relation(fields: [idUser], references: [idUser])
+  students_courses students_courses[]
+  students_project students_project[]
+
+  @@unique([controlNumber])
+}
+
+model advisors {
+  idAdvisor            Int                    @id @default(autoincrement())
+  idUser               Int
+  rfc                  String
+  isIntern             String                 @default("true")
+  user                 users                  @relation(fields: [idUser], references: [idUser])
+  advisors_departments advisors_departments[]
+  advisors_projects    advisors_projects[]
+  companies_advisors   companies_advisors[]
+
+  @@unique([rfc], name: "unique_rfc")
+  @@unique([idUser], name: "unique_idUser")
+}
+
+model companies {
+  idCompany          Int                  @id @default(autoincrement())
+  codename           String
+  name               String
+  size               String
+  companies_advisors companies_advisors[]
+
+  @@unique([codename])
+}
+
+model courses {
+  idCourse         Int                @id @default(autoincrement())
+  codename         String
+  name             String
+  students_courses students_courses[]
+
+  @@unique([name])
+}
+
+model projects {
+  idProject         Int                 @id @default(autoincrement())
+  keyname           String
+  name              String
+  description       String
+  funding           Decimal
+  dateBegin         DateTime
+  dateEnd           DateTime?
+  projects_tools    projects_tools[]
+  students_project  students_project[]
+  advisors_projects advisors_projects[]
+
+  @@unique([keyname])
+}
+
+model departments_ {
+  idDepartment         Int                    @id @default(autoincrement())
+  codename             String
+  name                 String
+  advisors_departments advisors_departments[]
+
+  @@unique([codename])
+}
+
+model advisors_departments {
+  idAdvisorDepartment Int          @id @default(autoincrement())
+  idAdvisor           Int
+  idDepartment        Int
+  advisor             advisors     @relation(fields: [idAdvisor], references: [idAdvisor])
+  department          departments_ @relation(fields: [idDepartment], references: [idDepartment])
+
+  @@unique([idAdvisor, idDepartment])
+}
+
+model advisors_projects {
+  idAdvisorProject Int      @id @default(autoincrement())
+  idAdvisor        Int
+  idProject        Int
+  advisor          advisors @relation(fields: [idAdvisor], references: [idAdvisor])
+  project          projects @relation(fields: [idProject], references: [idProject])
+
+  @@unique([idAdvisor, idProject])
+}
+
+model companies_advisors {
+  idCompanyAdvisor Int       @id @default(autoincrement())
+  idCompany        Int
+  idAdvisor        Int
+  company          companies @relation(fields: [idCompany], references: [idCompany])
+  advisor          advisors  @relation(fields: [idAdvisor], references: [idAdvisor])
+
+  @@unique([idAdvisor, idCompany])
+}
+
+model students_courses {
+  idStudentCourse Int      @id @default(autoincrement())
+  idStudent       Int
+  idCourse        Int
+  student         students @relation(fields: [idStudent], references: [idStudent])
+  course          courses  @relation(fields: [idCourse], references: [idCourse])
+
+  @@unique([idStudent, idCourse])
+}
+
+model tools_ {
+  idTool Int    @id @default(autoincrement())
+  name   String @unique
+
+  projects_tools projects_tools[]
+}
+
+model students_project {
+  idStudentProject Int      @id @default(autoincrement())
+  idStudent        Int
+  idProject        Int
+  student          students @relation(fields: [idStudent], references: [idStudent])
+  project          projects @relation(fields: [idProject], references: [idProject])
+
+  @@unique([idStudent])
+}
+
+model projects_tools {
+  idProjectTool Int      @id @default(autoincrement())
+  idProject     Int
+  idTool        Int
+  project       projects @relation(fields: [idProject], references: [idProject])
+  tool          tools_   @relation(fields: [idTool], references: [idTool])
+
+  @@unique([idProject, idTool])
+}
