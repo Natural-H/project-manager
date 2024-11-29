@@ -1,5 +1,6 @@
 import {prisma} from "@/app/prisma";
 import {NextResponse} from "next/server";
+import crypto from "node:crypto";
 
 export async function GET(request: Request, {params}: { params: { id: string } }) {
     const user = await prisma.users.findUnique({
@@ -13,13 +14,16 @@ export async function GET(request: Request, {params}: { params: { id: string } }
 
 export async function PUT(request: Request, {params}: { params: { id: string } }) {
     const data = await request.json();
+    const hash = crypto.createHash('sha256')
+    hash.update(data.password)
+
     await prisma.users.update({
         where: {
             idUser: Number(params.id),
         },
         data: {
             username: data.username,
-            password: data.password,
+            password: hash.digest('hex'),
             firstName: data.firstName,
             middleName: data.middleName,
             lastName: data.lastName,

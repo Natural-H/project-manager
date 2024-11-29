@@ -8,4 +8,3 @@ export type User = {
     curp: string
     email: string
 }
-
