@@ -3,9 +3,9 @@ import {NextResponse} from "next/server";
 import crypto from "node:crypto";
 
 export async function GET(request: Request, {params}: { params: { id: string } }) {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
-            idUser: Number(params.id),
+            id: Number(params.id),
         }
     })
 
@@ -17,9 +17,9 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
     const hash = crypto.createHash('sha256')
     hash.update(data.password)
 
-    await prisma.users.update({
+    await prisma.user.update({
         where: {
-            idUser: Number(params.id),
+            id: Number(params.id),
         },
         data: {
             username: data.username,
@@ -36,9 +36,9 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
 }
 
 export async function DELETE(request: Request, {params}: { params: { id: string } }) {
-    await prisma.users.delete({
+    await prisma.user.delete({
         where: {
-            idUser: Number(params.id),
+            id: Number(params.id),
         }
     })
 
