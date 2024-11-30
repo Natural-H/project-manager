@@ -1,25 +1,25 @@
 import {prisma} from "@/app/prisma";
-import {NextResponse} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 import crypto from "node:crypto";
 
-export async function GET(request: Request, {params}: { params: { id: string } }) {
+export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const user = await prisma.user.findUnique({
         where: {
-            id: Number(params.id),
+            id: Number((await params).id),
         }
     })
 
     return NextResponse.json(user, {status: user ? 200 : 404});
 }
 
-export async function PUT(request: Request, {params}: { params: { id: string } }) {
+export async function PUT(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const data = await request.json();
     const hash = crypto.createHash('sha256')
     hash.update(data.password)
 
-    await prisma.user.update({
+    const user = await prisma.user.update({
         where: {
-            id: Number(params.id),
+            id: Number((await params).id),
         },
         data: {
             username: data.username,
@@ -32,15 +32,15 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
         }
     })
 
-    return NextResponse.json(null, {status: 200});
+    return NextResponse.json(user, {status: 200});
 }
 
-export async function DELETE(request: Request, {params}: { params: { id: string } }) {
-    await prisma.user.delete({
+export async function DELETE(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
+    const user = await prisma.user.delete({
         where: {
-            id: Number(params.id),
+            id: Number((await params).id),
         }
     })
 
-    return NextResponse.json(null, {status: 200});
+    return NextResponse.json(user, {status: 200});
 }

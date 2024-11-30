@@ -1,5 +1,5 @@
 import {prisma} from "@/app/prisma"
-import {NextResponse} from "next/server"
+import {NextRequest, NextResponse} from "next/server"
 
 export async function GET() {
     const student = await prisma.student.findMany({
@@ -12,7 +12,7 @@ export async function GET() {
     return NextResponse.json(student, {status: 200})
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     const data = await request.json()
     const student = await prisma.student.create({
         data: {
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     return NextResponse.json(student, {status: 201})
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
     const data = await request.json()
     const student = await prisma.student.update({
         where: {
@@ -38,7 +38,7 @@ export async function PUT(request: Request) {
     return NextResponse.json(student, {status:200})
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
     const data = await request.json()
     const student = await prisma.student.delete({
         where: {

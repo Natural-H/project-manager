@@ -1,4 +1,4 @@
-import {NextResponse} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/app/prisma";
 import * as crypto from "node:crypto";
 
@@ -7,7 +7,7 @@ export async function GET() {
     return NextResponse.json(users, {status: 200});
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     const data = await request.json()
     const hash = crypto.createHash('sha256')
     hash.update(data.password)
