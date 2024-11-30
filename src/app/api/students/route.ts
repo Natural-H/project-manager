@@ -1,9 +1,15 @@
-import {prisma} from "@/app/prisma";
-import {NextResponse} from "next/server";
+import {prisma} from "@/app/prisma"
+import {NextResponse} from "next/server"
 
 export async function GET() {
-    const student = await prisma.student.findMany();
-    return NextResponse.json(student, {status: 200});
+    const student = await prisma.student.findMany({
+            include: {
+                user: true,
+                project: true
+            }
+        }
+    )
+    return NextResponse.json(student, {status: 200})
 }
 
 export async function POST(request: Request) {
@@ -14,5 +20,31 @@ export async function POST(request: Request) {
             controlNumber: data.controlNumber
         }
     })
-    return NextResponse.json(student, {status: 200});
+    return NextResponse.json(student, {status: 201})
+}
+
+export async function PUT(request: Request) {
+    const data = await request.json()
+    const student = await prisma.student.update({
+        where: {
+            id: data.id,
+        },
+        data: {
+            controlNumber: data.controlNumber,
+            projectId: data.projectId
+        }
+    })
+
+    return NextResponse.json(student, {status:200})
+}
+
+export async function DELETE(request: Request) {
+    const data = await request.json()
+    const student = await prisma.student.delete({
+        where: {
+            id: data.id,
+        },
+    })
+
+    return NextResponse.json(student, {status: 200})
 }
