@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
 
 
 export const metadata: Metadata = {
@@ -15,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${GeistSans.className} antialiased`}
       >
