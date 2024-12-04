@@ -3,8 +3,7 @@ import Credentials from "next-auth/providers/credentials"
 import {prisma} from "@/app/prisma"
 
 
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const {handlers, signIn, signOut, auth} = NextAuth({
     providers: [
         Credentials({
             // You can specify which fields should be submitted, by adding keys to the `credentials` object.
@@ -18,14 +17,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     let user = null
                     console.log("credentials", credentials)
 
-                    const { email, password } = credentials
+                    const {email, password} = credentials
 
 
                     // logic to verify if the user exists
-                    user = await prisma.users.findUnique({
+                    user = await prisma.user.findUnique({
                         where: {
-                           email,
-                           password
+                            email,
+                            password
                         },
                     })
 
