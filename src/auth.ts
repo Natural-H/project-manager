@@ -1,7 +1,6 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import crypto from 'crypto';
-import {prisma} from "@/app/prisma";
+import {prisma} from "@/app/prisma"
 
 
 
