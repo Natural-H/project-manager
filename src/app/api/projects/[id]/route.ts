@@ -1,47 +1,84 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/app/prisma";
+import {Prisma} from "@prisma/client";
+import {auth} from "@/auth";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
-    const project = await prisma.project.findUnique({
-        where: {
-            id: Number((await params).id)
-        },
-        include: {
-            students: true,
-            advisor: true,
-            tools: true
-        }
-    })
+    const session = await auth()
+    if (!session) return NextResponse.json("Not authorized", {status: 401})
 
-    return NextResponse.json(project, {status: project ? 200 : 404})
+    try {
+        const id = Number((await params).id)
+        const project = await prisma.project.findUnique({
+            where: {id},
+            include: {
+                students: true,
+                advisor: true,
+                tools: true
+            }
+        })
+
+        return NextResponse.json(project, {status: project ? 200 : 404})
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            return NextResponse.json({message: e.message, code: e.code})
+        } else if (e instanceof Prisma.PrismaClientValidationError) {
+            return NextResponse.json({message: "Parameter id is invalid"}, {status: 400})
+        }
+
+        throw e
+    }
 }
 
 export async function PUT(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
-    const data = await request.json()
-    const project = await prisma.project.update({
-        where: {
-            id: Number((await params).id)
-        },
-        data: {
-            keyname: data.keyname,
-            name: data.name,
-            description: data.description,
-            funding: data.funding,
-            dateBegin: data.dateBegin,
-            dateEnd: data.dateEnd,
-            companyId: data.companyId
-        }
-    })
+    const session = await auth()
+    if (!session) return NextResponse.json("Not authorized", {status: 401})
 
-    return NextResponse.json(project, {status: 200})
+    const {id, ...data} = await request.json()
+    if (id) return NextResponse.json({message: "Manually putting an id is not allowed"}, {status: 400})
+
+    try {
+        const id = Number((await params).id)
+
+        const project = await prisma.project.update({
+            where: {id},
+            data: {...data}
+        })
+
+        return NextResponse.json(project, {status: 200})
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            if (e.code === "SQLITE_CONSTRAINT")
+                return NextResponse.json({message: "There is a unique constraint violation."}, {status: 409})
+            if (e.code === "P2025") return NextResponse.json(null, {status: 404})
+
+            return NextResponse.json({message: e.message, code: e.code}, {status: 500})
+        } else if (e instanceof Prisma.PrismaClientValidationError) {
+            return NextResponse.json({message: "Malformed request"}, {status: 400})
+        }
+
+        throw e
+    }
 }
 
 export async function DELETE(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
-    const project = await prisma.project.delete({
-        where: {
-            id: Number((await params).id)
-        }
-    })
+    try {
+        const project = await prisma.project.delete({
+            where: {
+                id: Number((await params).id)
+            }
+        })
 
-    return NextResponse.json(project, {status: 200})
+        return NextResponse.json(project, {status: 200})
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            if (e.code === "P2025") return NextResponse.json(null, {status: 404})
+
+            return NextResponse.json({message: e.message, code: e.code})
+        } else if (e instanceof Prisma.PrismaClientValidationError) {
+            return NextResponse.json({message: "Parameter id is invalid"}, {status: 400})
+        }
+
+        throw e
+    }
 }
