@@ -13,7 +13,8 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
                 id: Number((await params).id)
             },
             include: {
-                user: true
+                user: true,
+                projects: true
             }
         });
 
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
     }
 }
 
-export async function DELETE({params}: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const session = await auth()
     if (!session) return NextResponse.json("Not authorized", {status: 401})
 

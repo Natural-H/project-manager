@@ -59,7 +59,10 @@ export async function PUT(request: NextRequest) {
     try {
         const advisor = await prisma.advisor.update({
             where: {id},
-            data: {...data}
+            data: {...data},
+            include: {
+                user: true
+            }
         })
 
         return NextResponse.json(advisor, {status: 200})

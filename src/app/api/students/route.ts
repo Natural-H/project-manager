@@ -48,19 +48,7 @@ export async function PUT(request: NextRequest) {
     try {
         const student = await prisma.student.update({
             where: {id},
-            data: {
-                ...data,
-                project: {
-                    connectOrCreate: {
-                        where: {
-                            ...data.project
-                        },
-                        create: {
-                            ...data.project
-                        }
-                    }
-                }
-            }
+            data: {...data}
         })
         return NextResponse.json(student, {status: student ? 200 : 404})
     } catch (e) {

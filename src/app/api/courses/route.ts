@@ -7,7 +7,11 @@ export async function GET() {
     const session = await auth()
     if (!session) return NextResponse.json("Not authorized", {status: 401})
 
-    const courses = prisma.course.findMany()
+    const courses = await prisma.course.findMany({
+        include: {
+            students: true,
+        }
+    })
     return NextResponse.json(courses, {status: 200})
 }
 

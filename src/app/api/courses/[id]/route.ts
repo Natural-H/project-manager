@@ -9,7 +9,12 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
 
     try {
         const id = Number((await params).id)
-        const course = await prisma.course.findUnique({where: {id}})
+        const course = await prisma.course.findUnique({
+            where: {id},
+            include: {
+                students: true
+            }
+        })
 
         return NextResponse.json(course, {status: course ? 200 : 404})
     } catch (e) {

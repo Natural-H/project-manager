@@ -1,6 +1,5 @@
 import {prisma} from "@/app/prisma";
 import {NextRequest, NextResponse} from "next/server";
-import crypto from "node:crypto";
 import {auth} from "@/auth";
 import {Prisma} from "@prisma/client";
 

@@ -46,7 +46,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ i
                     connect: advisor.map((a: Prisma.AdvisorSelect) => ({id: a.id}))
                 },
                 students: {
-                    connect: [idStudent, ...students.map((s: Prisma.StudentSelect) => ({id: s.id}))]
+                    connect: [{id: idStudent}, ...students.map((s: Prisma.StudentSelect) => ({id: s.id}))]
                 },
                 tools: {
                     connect: tools.map((t: Prisma.ToolsSelect) => ({id: t.id}))
@@ -90,7 +90,7 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
                     connect: advisor.map((a: Prisma.AdvisorSelect) => ({id: a.id}))
                 },
                 students: {
-                    connect: [idStudent, ...students.map((s: Prisma.StudentSelect) => ({id: s.id}))]
+                    connect: [{id: idStudent}, ...students.map((s: Prisma.StudentSelect) => ({id: s.id}))]
                 },
                 tools: {
                     connect: tools.map((t: Prisma.ToolsSelect) => ({id: t.id}))
