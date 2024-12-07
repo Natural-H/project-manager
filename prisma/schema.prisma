@@ -67,7 +67,7 @@ model Project {
   dateBegin   DateTime  @default(now())
   dateEnd     DateTime?
   companyId   Int
-  isFinished  String    @default("true")
+  isFinished  String    @default("false")
   company     Company   @relation(fields: [companyId], references: [id])
   students    Student[]
   advisor     Advisor[] @relation("AdvisorToProject")
