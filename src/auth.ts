@@ -1,6 +1,7 @@
 import NextAuth, { Session, User as NextAuthUser } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import {prisma} from "@/app/prisma"
+import { JWT } from 'next-auth/jwt'
 
 interface User extends NextAuthUser {
     id: string
@@ -45,7 +46,7 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
                     // return JSON object with the user data
                     return {
                         email: user.email,
-                        username: user.username,
+                        name: user.username,
                         id: user.id
                     }
                 } catch (error) {
@@ -56,4 +57,18 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
             },
         }),
     ],
+    callbacks: {
+        async session ({ session, token }: { session: Session, token: JWT }) {
+            if (session.user) {
+                session.user.id = token.sub as string
+            }
+            return session
+        },
+        async jwt ({ token, user }: { token: JWT, user: any }) {
+            if (user) {
+                token = { ...token, ...user }
+            }
+            return token
+        }
+    }
 })
