@@ -9,7 +9,11 @@ export async function GET() {
 
     const projects = await prisma.project.findMany({
         include: {
-            students: true,
+            students: {
+                include: {
+                    user: true
+                }
+            },
             advisor: true,
             tools: true
         }

@@ -12,7 +12,11 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
         const project = await prisma.project.findUnique({
             where: {id},
             include: {
-                students: true,
+                students: {
+                    include: {
+                        user: true
+                    }
+                },
                 advisor: true,
                 tools: true
             }
