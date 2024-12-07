@@ -1,7 +1,16 @@
-import NextAuth from "next-auth"
+import NextAuth, { Session, User as NextAuthUser } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import {prisma} from "@/app/prisma"
 
+interface User extends NextAuthUser {
+    id: string
+}
+
+declare module 'next-auth' {
+    interface Session {
+        user: User
+    }
+}
 
 export const {handlers, signIn, signOut, auth} = NextAuth({
     providers: [
@@ -34,7 +43,11 @@ export const {handlers, signIn, signOut, auth} = NextAuth({
                     }
 
                     // return JSON object with the user data
-                    return user
+                    return {
+                        email: user.email,
+                        username: user.username,
+                        id: user.id
+                    }
                 } catch (error) {
                     // Return null if user data could not be retrieved
                     console.log(error.message)
