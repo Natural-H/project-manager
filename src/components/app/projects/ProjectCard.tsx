@@ -1,38 +1,37 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import {Project, Student} from "@prisma/client";
+import {format} from "@formkit/tempo";
 
-interface ProjectCardProps {
-    title: string
-    description: string
-    progress: number
-    status: "En progreso" | "Completado" | "En espera"
-    team: { name: string; avatar: string }[]
-}
-
-export function ProjectCard({ title, description, progress, status, team }: ProjectCardProps) {
+export function ProjectCard({project} : {project: Project}) {
+    const status = "Completado"
     return (
-        <Card>
+        <Card className="max-w-[350px]">
             <CardHeader>
-                <div className="flex justify-between items-start">
-                    <CardTitle>{title}</CardTitle>
-                    <Badge variant={status === "Completado" ? "default" : status === "En progreso" ? "secondary" : "outline"}>
-                        {status}
-                    </Badge>
+                <div className="flex justify-between items-start flex-col">
+                    <div className="flex gap-4">
+                        <CardTitle>{project.name}</CardTitle>
+                        <Badge
+                            variant={status === "Completado" ? "default" : status === "En progreso" ? "secondary" : "outline"}>
+                            {status}
+                        </Badge>
+                    </div>
+                   <p className="text-muted-foreground mb-4">{project.description}</p>
                 </div>
             </CardHeader>
             <CardContent>
-                <p className="text-muted-foreground mb-4">{description}</p>
-                <Progress value={progress} className="mb-2" />
-                <p className="text-sm text-muted-foreground">{progress}% completado</p>
+                <p className="text-muted-foreground">Fecha de inicio: <span
+                    className="font-bold text-black">{format(project.dateBegin, {date: 'long'}, "es")}</span></p>
+                <p className="text-muted-foreground">Remuneración: <span
+                    className="font-bold text-black">{Number(project.funding) === 0 ? 'Sin remuneración' : `$${project.funding}`}</span></p>
             </CardContent>
             <CardFooter>
                 <div className="flex -space-x-2">
-                    {team.map((member, index) => (
+                    {project.students.map((student: Student, index: number) => (
                         <Avatar key={index} className="border-2 border-background">
-                            <AvatarImage src={member.avatar} alt={member.name} />
-                            <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>A</AvatarFallback>
                         </Avatar>
                     ))}
                 </div>
