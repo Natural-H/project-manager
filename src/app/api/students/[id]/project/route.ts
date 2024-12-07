@@ -32,30 +32,26 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ i
     const session = await auth()
     if (!session) return NextResponse.json({message: "Unauthorized"}, {status: 401})
 
-    const data = await request.json()
+    const {id, ...data} = await request.json()
 
     try {
-        const id = Number((await params).id)
+        const idStudent = Number((await params).id)
 
-        const student = await prisma.student.update({
+        const project = await prisma.student.update({
             where: {
-                id
+                id: idStudent
             },
             data: {
                 project: {
-                    connect: {
-                        id: data.id
+                    connectOrCreate: {
+                        where: {id},
+                        create: {...data,}
                     }
                 }
-            },
-            include: {
-                project: {
-                    include: {tools: true}
-                },
             }
-        })
+        }).project({include: {tools: true}})
 
-        return NextResponse.json(student, {status: student ? 200 : 404})
+        return NextResponse.json(project, {status: project ? 200 : 404})
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === "SQLITE_CONSTRAINT")
@@ -76,12 +72,11 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
     if (!session) return NextResponse.json({message: "Unauthorized"}, {status: 401})
 
     const {id, ...data} = await request.json()
-    if (id) return NextResponse.json({message: "Manually putting an id is not allowed"}, {status: 400})
 
     try {
         const id = Number((await params).id)
 
-        const student = await prisma.student.update({
+        const project = await prisma.student.update({
             where: {
                 id
             },
@@ -90,23 +85,14 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
                     update: {
                         ...data,
                         tools: {
-                            connect: [
-                                ...data.tools
-                            ]
+                            connect: [...data.tools]
                         }
                     }
                 }
-            },
-            include: {
-                project: {
-                    include: {
-                        tools: true
-                    }
-                },
             }
-        })
+        }).project({include: {tools: true}})
 
-        return NextResponse.json(student, {status: student ? 200 : 404})
+        return NextResponse.json(project, {status: project ? 200 : 404})
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === "SQLITE_CONSTRAINT")
@@ -115,7 +101,7 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
 
             return NextResponse.json({message: e.message, code: e.code}, {status: 500})
         } else if (e instanceof Prisma.PrismaClientValidationError) {
-            return NextResponse.json({message: "Malformed request"}, {status: 400})
+            return NextResponse.json({message: data.tools}, {status: 400})
         }
 
         throw e

@@ -1,40 +1,55 @@
 import {prisma} from "@/app/prisma";
 import {NextRequest, NextResponse} from "next/server";
+import {auth} from "@/auth";
+import {Prisma} from "@prisma/client";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
-    const advisor = await prisma.advisor.findUnique({
-        where: {
-            id: Number((await params).id)
-        },
-        include: {
-            user: true
+    const session = await auth()
+    if (!session) return NextResponse.json("Not authorized", {status: 401})
+
+    try {
+        const advisor = await prisma.advisor.findUnique({
+            where: {
+                id: Number((await params).id)
+            },
+            include: {
+                user: true
+            }
+        });
+
+        return NextResponse.json(advisor, {status: advisor ? 200 : 404});
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            return NextResponse.json({message: e.message, code: e.code})
+        } else if (e instanceof Prisma.PrismaClientValidationError) {
+            return NextResponse.json({message: "Parameter id is invalid"}, {status: 400})
         }
-    });
 
-    return NextResponse.json(advisor, {status: advisor ? 200 : 404});
-}
-
-export async function PUT(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
-    const data = await request.json()
-    const advisor = await prisma.advisor.update({
-        where: {
-            id: Number((await params).id)
-        },
-        data: {
-            rfc: data.rfc,
-            isIntern: data.isIntern
-        }
-    })
-
-    return NextResponse.json(advisor, {status: 200})
+        throw e
+    }
 }
 
 export async function DELETE({params}: { params: Promise<{ id: string }> }) {
-    const advisor = await prisma.advisor.delete({
-        where: {
-            id: Number((await params).id)
-        }
-    })
+    const session = await auth()
+    if (!session) return NextResponse.json("Not authorized", {status: 401})
 
-    return NextResponse.json(advisor, {status: 200})
+    try {
+        const advisor = await prisma.advisor.delete({
+            where: {
+                id: Number((await params).id)
+            }
+        })
+
+        return NextResponse.json(advisor, {status: 200})
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            if (e.code === "P2025") return NextResponse.json(null, {status: 404})
+
+            return NextResponse.json({message: e.message, code: e.code})
+        } else if (e instanceof Prisma.PrismaClientValidationError) {
+            return NextResponse.json({message: "Parameter id is invalid"}, {status: 400})
+        }
+
+        throw e
+    }
 }
