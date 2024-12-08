@@ -9,9 +9,9 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
 
     try {
         const id = Number((await params).id)
-        const companies = await prisma.advisor.findUnique({where: {id}}).companies({
+        const courses = await prisma.student.findUnique({where: {id}}).courses({
             include: {
-                advisors: {
+                students: {
                     include: {
                         user: true
                     }
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
             }
         });
 
-        return NextResponse.json(companies, {status: companies ? 200 : 404});
+        return NextResponse.json(courses, {status: courses ? 200 : 404});
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return NextResponse.json({message: e.message, code: e.code}, {status: 500})
@@ -39,15 +39,15 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ i
     const data = await request.json()
 
     try {
-        const company = await prisma.company.create({
+        const course = await prisma.course.create({
             data: {
                 ...data,
-                advisors: {
-                    connect: [{id}, ...data.advisors?.map((a: Prisma.AdvisorSelect) => ({id: a.id})) ?? []]
+                students: {
+                    connect: [{id}, ...data.students?.map((a: Prisma.StudentSelect) => ({id: a.id})) ?? []]
                 }
             },
             include: {
-                advisors: {
+                students: {
                     include: {
                         user: true
                     }
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ i
             }
         })
 
-        return NextResponse.json(company, {status: 201})
+        return NextResponse.json(course, {status: 201})
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === "SQLITE_CONSTRAINT")
@@ -78,16 +78,16 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
     const {id: idC, ...data} = await request.json()
 
     try {
-        const company = await prisma.company.update({
+        const course = await prisma.course.update({
             where: {id: idC},
             data: {
                 ...data,
-                advisors: {
-                    connect: [{id}, ...data.advisors?.map((a: Prisma.AdvisorSelect) => ({id: a.id})) ?? []]
+                students: {
+                    connect: [{id}, ...data.students?.map((a: Prisma.StudentSelect) => ({id: a.id})) ?? []]
                 }
             },
             include: {
-                advisors: {
+                students: {
                     include: {
                         user: true
                     }
@@ -95,7 +95,7 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
             }
         })
 
-        return NextResponse.json(company, {status: 200})
+        return NextResponse.json(course, {status: 200})
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === "SQLITE_CONSTRAINT")
