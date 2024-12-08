@@ -9,6 +9,14 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {ArrowLeft, Save} from 'lucide-react'
 import {Student} from "@/lib/Types";
+import {
+    Dialog, DialogClose,
+    DialogContent,
+    DialogDescription, DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
 
 export function StudentProfile({student}: { student: Student }) {
     const router = useRouter()
@@ -52,7 +60,7 @@ export function StudentProfile({student}: { student: Student }) {
             method: 'PUT',
             body: JSON.stringify(body),
         })
-        if(!res.ok) {
+        if (!res.ok) {
             const data = await res.json()
             setError({
                 message: data.message,
@@ -64,6 +72,21 @@ export function StudentProfile({student}: { student: Student }) {
         const data = await res.json()
         console.log(data)
         setIsEditing(false)
+    }
+
+    const handleDelete = async () => {
+        const res = await fetch(`/api/students/${student.id}`, {
+            method: 'DELETE',
+        })
+        if (!res.ok) {
+            const data = await res.json()
+            setError({
+                message: data.message,
+                show: true
+            })
+            return
+        }
+        router.push('/app/students')
     }
 
     return (
@@ -86,8 +109,9 @@ export function StudentProfile({student}: { student: Student }) {
                 <CardContent className="space-y-4">
                     <form ref={formRef}>
                         {
-                            error.show && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                                                 role="alert">
+                            error.show &&
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                                 role="alert">
                                 <strong className="font-bold">Error!</strong>
                                 <span className="block sm:inline">{error.message}</span>
                             </div>
@@ -173,7 +197,29 @@ export function StudentProfile({student}: { student: Student }) {
                             </Button>
                         </>
                     ) : (
-                        <Button onClick={() => setIsEditing(true)}>Editar perfil</Button>
+                        <>
+                            <Button onClick={() => setIsEditing(true)}>Editar perfil</Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="destructive">Eliminar estudiante</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Eliminar estudiante</DialogTitle>
+                                        <DialogDescription>
+                                            ¿Estás seguro de que deseas <span className='text-red-500'>eliminar</span> a {student.user.firstName} {student.user.lastName}?
+                                            Nota: Esta acción no se puede deshacer.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                   <DialogFooter>
+                                       <DialogClose asChild>
+                                           <Button variant="outline">Cancelar</Button>
+                                       </DialogClose>
+                                        <Button variant="destructive" onClick={handleDelete}>Eliminar</Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </>
                     )}
                 </CardFooter>
             </Card>
