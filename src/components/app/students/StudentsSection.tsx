@@ -1,6 +1,6 @@
 import {cookies} from "next/headers";
 import {StudentCard} from "@/components/app/students/StudentCard";
-import {Student} from "@/lib/Types";
+import {Student} from "@/lib/types";
 
 export async function StudentsSection() {
     const cookieStore = await cookies()

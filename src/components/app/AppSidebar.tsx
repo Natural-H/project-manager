@@ -28,7 +28,7 @@ const items = [
     },
     {
         title: "Organizaciones",
-        url: "#",
+        url: "/app/companies",
         icon: Building2,
     },
     {

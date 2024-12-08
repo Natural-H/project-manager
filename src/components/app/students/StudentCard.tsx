@@ -8,7 +8,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import {Student} from "@/lib/Types";
+import {Student} from "@/lib/types";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 

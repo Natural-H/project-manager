@@ -8,7 +8,7 @@ import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {ArrowLeft, Save} from 'lucide-react'
-import {Student} from "@/lib/Types";
+import {Student} from "@/lib/types";
 import {
     Dialog, DialogClose,
     DialogContent,
