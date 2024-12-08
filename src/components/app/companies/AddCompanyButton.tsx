@@ -21,9 +21,10 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import {useState} from "react";
 
-// TODO: Finish this component
 export function AddCompanyButton() {
+    const [error, setError] = useState(false)
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const form = e.target as HTMLFormElement
@@ -38,8 +39,10 @@ export function AddCompanyButton() {
             body: JSON.stringify(data)
         })
         if(!newCompany.ok) {
+            setError(true)
             return
         }
+        setError(false)
         window.location.reload()
     }
     return (
@@ -50,8 +53,11 @@ export function AddCompanyButton() {
             <DialogContent className="">
                 <DialogHeader>
                     <DialogTitle>Añadir organización</DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="flex flex-col">
                         Rellena los campos para añadir una organización
+                        {
+                            error && <span className="text-red-500">Error al agregar organización nueva</span>
+                        }
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
