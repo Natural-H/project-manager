@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest) {
         // }).then(u => u?.email)
         //
         // if (!email) return NextResponse.json(null, {status: 404})
-        // if (session.user?.email !== email) return NextResponse.json({message: "Unauthorized"}, {status: 401});
+        // if (session.user?.email !== email) return NextResponse.json({message: "Not authorized"}, {status: 401});
         const hash = crypto.createHash("sha256").update(data.password).digest("hex");
 
         const user = await prisma.user.update({

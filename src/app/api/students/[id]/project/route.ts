@@ -5,7 +5,7 @@ import {Prisma} from "@prisma/client";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const session = await auth()
-    if (!session) return NextResponse.json({message: "Unauthorized"}, {status: 401})
+    if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
 
     try {
         const id = Number((await params).id)
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
 
 export async function POST(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const session = await auth()
-    if (!session) return NextResponse.json({message: "Unauthorized"}, {status: 401})
+    if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
 
     const {advisor, students, tools, ...data} = await request.json()
     const idStudent = Number((await params).id)
@@ -43,13 +43,13 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ i
             data: {
                 ...data,
                 advisor: {
-                    connect: advisor.map((a: Prisma.AdvisorSelect) => ({id: a.id}))
+                    connect: advisor?.map((a: Prisma.AdvisorSelect) => ({id: a.id})) ?? []
                 },
                 students: {
-                    connect: [{id: idStudent}, ...students.map((s: Prisma.StudentSelect) => ({id: s.id}))]
+                    connect: [{id: idStudent}, ...students?.map((s: Prisma.StudentSelect) => ({id: s.id})) ?? []]
                 },
                 tools: {
-                    connect: tools.map((t: Prisma.ToolsSelect) => ({id: t.id}))
+                    connect: tools?.map((t: Prisma.ToolsSelect) => ({id: t.id})) ?? []
                 }
             },
             include: {
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ i
 
 export async function PUT(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const session = await auth()
-    if (!session) return NextResponse.json({message: "Unauthorized"}, {status: 401})
+    if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
 
     const {id, advisor, students, tools, ...data} = await request.json()
     const idStudent = Number((await params).id)
@@ -87,13 +87,13 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
             data: {
                 ...data,
                 advisor: {
-                    connect: advisor.map((a: Prisma.AdvisorSelect) => ({id: a.id}))
+                    connect: advisor?.map((a: Prisma.AdvisorSelect) => ({id: a.id})) ?? []
                 },
                 students: {
-                    connect: [{id: idStudent}, ...students.map((s: Prisma.StudentSelect) => ({id: s.id}))]
+                    connect: [{id: idStudent}, ...students?.map((s: Prisma.StudentSelect) => ({id: s.id})) ?? []]
                 },
                 tools: {
-                    connect: tools.map((t: Prisma.ToolsSelect) => ({id: t.id}))
+                    connect: tools?.map((t: Prisma.ToolsSelect) => ({id: t.id})) ?? []
                 }
             },
             include: {
