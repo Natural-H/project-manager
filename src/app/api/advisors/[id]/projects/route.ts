@@ -14,9 +14,13 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
             .projects({
                 include: {
                     advisor: true,
-                    students: true,
+                    students: {
+                        include: {
+                            user: true
+                        }
+                    },
                     tools: true,
-                }
+                },
             });
 
         return NextResponse.json(projects, {status: projects ? 200 : 404})
