@@ -1,7 +1,7 @@
-import {auth} from "@/auth";
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/app/prisma";
 import {Prisma} from "@prisma/client";
+import {auth} from "@/auth";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const session = await auth()
@@ -9,17 +9,17 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
 
     try {
         const id = Number((await params).id)
-
-        const projects = await prisma.advisor.findUnique({where: {id}})
-            .projects({
-                include: {
-                    advisor: true,
-                    students: true,
-                    tools: true,
+        const companies = await prisma.advisor.findUnique({where: {id}}).companies({
+            include: {
+                advisors: {
+                    include: {
+                        user: true
+                    }
                 }
-            });
+            }
+        });
 
-        return NextResponse.json(projects, {status: projects ? 200 : 404})
+        return NextResponse.json(companies, {status: companies ? 200 : 404});
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return NextResponse.json({message: e.message, code: e.code}, {status: 500})
@@ -35,31 +35,27 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ i
     const session = await auth()
     if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
 
-    const {advisor, students, tools, ...data} = await request.json()
-    const idAdvisor = Number((await params).id)
+    const id = Number((await params).id)
+    const data = await request.json()
 
     try {
-        const project = await prisma.project.create({
+        const company = await prisma.company.create({
             data: {
                 ...data,
-                advisor: {
-                    connect: [{id: idAdvisor}, ...advisor?.map((a: Prisma.AdvisorSelect) => ({id: a.id})) ?? []]
-                },
-                students: {
-                    connect: students?.map((s: Prisma.StudentSelect) => ({id: s.id})) ?? []
-                },
-                tools: {
-                    connect: tools?.map((t: Prisma.ToolsSelect) => ({id: t.id})) ?? []
+                advisors: {
+                    connect: [{id}, ...data.advisors?.map((a: Prisma.StudentSelect) => ({id: a.id})) ?? []]
                 }
             },
             include: {
-                advisor: true,
-                students: true,
-                tools: true
-            },
+                advisors: {
+                    include: {
+                        user: true
+                    }
+                }
+            }
         })
 
-        return NextResponse.json(project, {status: 201})
+        return NextResponse.json(company, {status: 201})
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === "SQLITE_CONSTRAINT")
@@ -78,32 +74,28 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
     const session = await auth()
     if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
 
-    const {id, advisor, students, tools, ...data} = await request.json()
-    const idAdvisor = Number((await params).id)
+    const id = Number((await params).id)
+    const {id: idC, ...data} = await request.json()
 
     try {
-        const project = await prisma.project.update({
-            where: {id},
+        const company = await prisma.company.update({
+            where: {id: idC},
             data: {
                 ...data,
-                advisor: {
-                    connect: [{id: idAdvisor}, ...advisor?.map((a: Prisma.AdvisorSelect) => ({id: a.id})) ?? []]
-                },
-                students: {
-                    connect: students?.map((s: Prisma.StudentSelect) => ({id: s.id})) ?? []
-                },
-                tools: {
-                    connect: tools?.map((t: Prisma.ToolsSelect) => ({id: t.id})) ?? []
+                advisors: {
+                    connect: [{id}, ...data.advisors?.map((a: Prisma.StudentSelect) => ({id: a.id})) ?? []]
                 }
             },
             include: {
-                advisor: true,
-                students: true,
-                tools: true
-            },
+                advisors: {
+                    include: {
+                        user: true
+                    }
+                }
+            }
         })
 
-        return NextResponse.json(project, {status: project ? 200 : 404})
+        return NextResponse.json(company, {status: 200})
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === "SQLITE_CONSTRAINT")
@@ -114,8 +106,6 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
         } else if (e instanceof Prisma.PrismaClientValidationError) {
             return NextResponse.json({message: "Malformed request"}, {status: 400})
         }
-
         throw e
     }
 }
-

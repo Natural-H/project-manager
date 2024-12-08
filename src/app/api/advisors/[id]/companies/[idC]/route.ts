@@ -1,26 +1,28 @@
 import {NextRequest, NextResponse} from "next/server";
-import {auth} from "@/auth";
 import {prisma} from "@/app/prisma";
 import {Prisma} from "@prisma/client";
+import {auth} from "@/auth";
 
-export async function DELETE(request: NextRequest, {params}: { params: Promise<{ id: string, idP: string }> }) {
+export async function DELETE(request: NextRequest, {params}: { params: Promise<{ id: string, idC: string }> }) {
     const session = await auth()
     if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
 
-    try {
-        const parameters = await params
-        const [id, idP] = [Number((parameters).id), Number((parameters).idP)]
+    const parameters = await params
+    const [id, idC] = [Number(parameters.id), Number(parameters.idC)]
 
+    try {
         await prisma.advisor.update({
             where: {
                 id,
-                projects: {
-                    some: {id: idP}
+                companies: {
+                    some: {id: idC}
                 }
             },
             data: {
-                projects: {
-                    disconnect: {id: idP}
+                companies: {
+                    disconnect: {
+                        id: idC
+                    }
                 }
             }
         })
