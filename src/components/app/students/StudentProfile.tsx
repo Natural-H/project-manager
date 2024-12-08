@@ -13,6 +13,10 @@ import {Student} from "@/lib/Types";
 export function StudentProfile({student}: { student: Student }) {
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
+    const [error, setError] = useState({
+        message: '',
+        show: false
+    })
     const formRef = useRef<HTMLFormElement>(null)
 
     useEffect(() => {
@@ -46,9 +50,19 @@ export function StudentProfile({student}: { student: Student }) {
         console.log(body)
         const res = await fetch(`/api/students/${student.id}`, {
             method: 'PUT',
-            body: body,
+            body: JSON.stringify(body),
         })
+        if(!res.ok) {
+            const data = await res.json()
+            setError({
+                message: data.message,
+                show: true
+            })
+            return
+        }
         console.log(res)
+        const data = await res.json()
+        console.log(data)
         setIsEditing(false)
     }
 
@@ -71,6 +85,13 @@ export function StudentProfile({student}: { student: Student }) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <form ref={formRef}>
+                        {
+                            error.show && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                                                 role="alert">
+                                <strong className="font-bold">Error!</strong>
+                                <span className="block sm:inline">{error.message}</span>
+                            </div>
+                        }
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Primer nombre</Label>

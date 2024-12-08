@@ -45,25 +45,25 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
     }
 }
 
-export async function PUT(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
-    const id = Number((await params).id)
+export async function PUT(request: NextRequest) {
     const body = await request.json()
-
     try {
         const student = await prisma.student.update({
-            where: {id},
+            where: {
+                id: body.id
+            },
             data: {
                 user: {
                     update: {
-                        firstName: body.firstName,
-                        lastName: body.lastName,
-                        email: body.email,
-                        username: body.username,
-                        curp: body.curp
+                        firstName: body.user.firstName,
+                        middleName: body.user.middleName,
+                        lastName: body.user.lastName,
+                        email: body.user.email,
+                        username: body.user.username,
+                        curp: body.user.curp,
                     }
                 },
                 controlNumber: body.controlNumber,
-                project: {connect: {id: body.projectId}}
             }
         })
         return NextResponse.json(student, {status: 200})
@@ -73,9 +73,9 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ id
 
             return NextResponse.json({message: e.message, code: e.code})
         } else if (e instanceof Prisma.PrismaClientValidationError) {
-            return NextResponse.json({message: "Parameter id is invalid"}, {status: 400})
+            return NextResponse.json({message: e.message}, {status: 400})
         }
-
+        console.log("Error", e)
         throw e
     }
 }
