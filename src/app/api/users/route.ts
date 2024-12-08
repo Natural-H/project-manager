@@ -15,8 +15,7 @@ export async function POST(request: NextRequest) {
     const session = await auth();
     if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401});
 
-    const {id, ...data} = await request.json()
-    if (id) return NextResponse.json({message: "Manually putting an id is not allowed"}, {status: 400})
+    const data = await request.json()
 
     try {
         const hash = crypto.createHash("sha256").update(data.password).digest("hex")
