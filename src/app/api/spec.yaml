@@ -1,0 +1,1458 @@
+openapi: 3.0.0
+info:
+  title: Gestor de Proyectos de Residencia.
+  description: Un API para el Gestor de Proyectos de Residencia.
+  version: 0.1.0
+servers:
+  - url: 'http:localhost:3000/api'
+tags:
+  - name: Usuarios
+    description: Todo sobre los usuarios, que pueden ser estudiantes o asesores.
+  - name: Asesores
+    description: Todo sobre los asesores, que administran los proyectos.
+  - name: Estudiantes
+    description: Todo sobre los estudiantes.
+  - name: Proyectos
+    description: Todo sobre los proyectos.
+  - name: Departamentos
+    description: Todo sobre los departamentos.
+  - name: Carreras
+    description: Todo sobre las carreras.
+  - name: Empresas
+    description: Todo sobre las empresas.
+  - name: Herramientas
+    description: Todo sobre las herramientas.
+paths:
+  /users:
+    get:
+      tags:
+        - Usuarios
+      summary: Mira todos los usuarios.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/user"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Usuarios
+      summary: Registra un nuevo usuario.
+      operationId: addUser
+      requestBody:
+        $ref: "#/components/requestBodies/user"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Usuarios
+      summary: Edita un usuario.
+      operationId: updateUser
+      requestBody:
+        $ref: "#/components/requestBodies/user"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /users/id:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtiene un usuario con un id
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el usuario.
+    delete:
+      tags:
+        - Usuarios
+      summary: Elimina un usuario con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el usuario.
+  /advisors:
+    get:
+      tags:
+        - Asesores
+      summary: Obtiene todos los asesores.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/advisor"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Asesores
+      summary: Registra un asesor.
+      requestBody:
+        $ref: "#/components/requestBodies/advisor"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/advisor"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Asesores
+      summary: Edita un asesor.
+      requestBody:
+        $ref: "#/components/requestBodies/advisor"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/advisor"
+        404:
+          description: No se encontró el asesor.
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /advisors/id:
+    get:
+      tags:
+        - Asesores
+      summary: Obtiene un asesor con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/advisor"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el asesor.
+    delete:
+      tags:
+        - Asesores
+      summary: Elimina un asesor con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/advisor"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el asesor.
+  /advisors/id/projects:
+    get:
+      tags:
+        - Asesores
+      summary: Obtiene los proyectos del asesor con id.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/project"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el asesor.
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Asesores
+      summary: Crea y asigna un proyecto al asesor con id.
+      requestBody:
+        $ref: "#/components/requestBodies/project"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al asesor.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Asesores
+      summary: Modifica y asigna un proyecto al asesor con id.
+      requestBody:
+        $ref: "#/components/requestBodies/project"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al asesor.
+        500:
+          description: Error interno.
+  /advisors/id/projects/id:
+    delete:
+      tags:
+        - Asesores
+      summary: Desvincula un proyecto con id de un asesor con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: idP
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+        404:
+          description: No se encontró asesor o proyecto.
+        400:
+          description: Alguna id no es válida.
+        500:
+          description: Error Interno.
+  /advisors/id/departments:
+    get:
+      tags:
+        - Asesores
+      summary: Obtiene los departamentos a los que pertenece el asesor con id.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/department"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el asesor.
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Asesores
+      summary: Crea y asigna un departamento al asesor con id.
+      requestBody:
+        $ref: "#/components/requestBodies/department"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/department"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al asesor.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Asesores
+      summary: Modifica y asigna un departamento al asesor con id.
+      requestBody:
+        $ref: "#/components/requestBodies/department"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/department"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al asesor.
+        500:
+          description: Error interno.
+  /advisors/id/departments/id:
+    delete:
+      tags:
+        - Asesores
+      summary: Desvincula un departamento con id de un asesor con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: idD
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+        404:
+          description: No se encontró asesor o departamento.
+        400:
+          description: Alguna id no es válida.
+        500:
+          description: Error Interno.
+  /advisors/id/companies:
+    get:
+      tags:
+        - Asesores
+      summary: Obtiene las empresas a los que pertenece el asesor con id.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/company"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el asesor.
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Asesores
+      summary: Crea y asigna una empresa al asesor con id.
+      requestBody:
+        $ref: "#/components/requestBodies/company"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/company"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al asesor.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Asesores
+      summary: Modifica y asigna una empresa al asesor con id.
+      requestBody:
+        $ref: "#/components/requestBodies/company"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/company"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al asesor.
+        500:
+          description: Error interno.
+  /advisors/id/companies/id:
+    delete:
+      tags:
+        - Asesores
+      summary: Desvincula una empresa con id de un asesor con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: idD
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+        404:
+          description: No se encontró asesor o empresa.
+        400:
+          description: Alguna id no es válida.
+        500:
+          description: Error Interno.
+  /students:
+    get:
+      tags:
+        - Estudiantes
+      summary: Obtiene todos los estudiantes.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/student"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Estudiantes
+      summary: Registra un estudiante.
+      requestBody:
+        $ref: "#/components/requestBodies/student"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/student"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Estudiantes
+      summary: Edita un estudiante.
+      requestBody:
+        $ref: "#/components/requestBodies/student"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/student"
+        404:
+          description: No se encontró el estudiante.
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /students/id:
+    get:
+      tags:
+        - Estudiantes
+      summary: Obtiene un estudiante con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/student"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el estudiante.
+    delete:
+      tags:
+        - Estudiantes
+      summary: Elimina un estudiante con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/student"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el estudiante.
+  /students/id/courses:
+    get:
+      tags:
+        - Estudiantes
+      summary: Obtiene las carreras a los que pertenece el asesor con id.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/course"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el estudiante.
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Estudiantes
+      summary: Crea y asigna una empresa al estudiante con id.
+      requestBody:
+        $ref: "#/components/requestBodies/course"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/course"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al estudiante.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Estudiantes
+      summary: Modifica y asigna una carrera al estudiante con id.
+      requestBody:
+        $ref: "#/components/requestBodies/course"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/course"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al estudiante.
+        500:
+          description: Error interno.
+  /students/id/courses/id:
+    delete:
+      tags:
+        - Estudiantes
+      summary: Desvincula una carrera con id de un estudiante con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: idD
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+        404:
+          description: No se encontró estudiante o carrera.
+        400:
+          description: Alguna id no es válida.
+        500:
+          description: Error Interno.
+  /students/id/projects:
+    get:
+      tags:
+        - Estudiantes
+      summary: Obtiene los proyectos del estudiante con id.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/project"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el estudiante.
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Estudiantes
+      summary: Crea y asigna un proyecto al estudiante con id.
+      requestBody:
+        $ref: "#/components/requestBodies/project"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al estudiante.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Estudiantes
+      summary: Modifica y asigna un proyecto al estudiante con id.
+      requestBody:
+        $ref: "#/components/requestBodies/project"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        400:
+          description: Solicitud malformada.
+        404:
+          description: No se encontró al estudiante.
+        500:
+          description: Error interno.
+  /students/id/projects/id:
+    delete:
+      tags:
+        - Estudiantes
+      summary: Desvincula un proyecto con id de un estudiante con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+        - name: idP
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+        404:
+          description: No se encontró estudiante o proyecto.
+        400:
+          description: Alguna id no es válida.
+        500:
+          description: Error Interno.
+  /projects:
+    get:
+      tags:
+        - Proyectos
+      summary: Obtiene todos los proyectos.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/project"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Proyectos
+      summary: Registra un proyecto.
+      requestBody:
+        $ref: "#/components/requestBodies/project"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Proyectos
+      summary: Edita un proyecto.
+      requestBody:
+        $ref: "#/components/requestBodies/project"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        404:
+          description: No se encontró el proyecto.
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /projects/id:
+    get:
+      tags:
+        - Proyectos
+      summary: Obtiene un proyecto con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el proyecto.
+    delete:
+      tags:
+        - Proyectos
+      summary: Elimina un proyecto con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/project"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el proyecto.
+  /departments:
+    get:
+      tags:
+        - Departamentos
+      summary: Obtiene todos los departamentos.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/department"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Departamentos
+      summary: Registra un departamento.
+      requestBody:
+        $ref: "#/components/requestBodies/department"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/department"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Departamentos
+      summary: Edita un departamento.
+      requestBody:
+        $ref: "#/components/requestBodies/department"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/department"
+        404:
+          description: No se encontró el departamento.
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /departments/id:
+    get:
+      tags:
+        - Departamentos
+      summary: Obtiene un departamento con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/department"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el departamento.
+    delete:
+      tags:
+        - Departamentos
+      summary: Elimina un departamento con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/department"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el departamento.
+  /courses:
+    get:
+      tags:
+        - Carreras
+      summary: Obtiene todas las carreras.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/course"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Carreras
+      summary: Registra una carrera.
+      requestBody:
+        $ref: "#/components/requestBodies/course"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/course"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Carreras
+      summary: Edita una carrera.
+      requestBody:
+        $ref: "#/components/requestBodies/course"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/course"
+        404:
+          description: No se encontró el proyecto.
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /courses/id:
+    get:
+      tags:
+        - Carreras
+      summary: Obtiene una carrera con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/course"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el proyecto.
+    delete:
+      tags:
+        - Carreras
+      summary: Elimina una carrera con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/course"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró el proyecto.
+  /companies:
+    get:
+      tags:
+        - Empresas
+      summary: Obtiene todas las empresas.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/company"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Empresas
+      summary: Registra una empresa.
+      requestBody:
+        $ref: "#/components/requestBodies/company"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/company"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Empresas
+      summary: Edita una empresa.
+      requestBody:
+        $ref: "#/components/requestBodies/company"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/company"
+        404:
+          description: No se encontró la empresa.
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /companies/id:
+    get:
+      tags:
+        - Empresas
+      summary: Obtiene una empresa con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/company"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró la empresa.
+    delete:
+      tags:
+        - Empresas
+      summary: Elimina una empresa con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/company"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró la empresa.
+  /tools:
+    get:
+      tags:
+        - Herramientas
+      summary: Obtiene todas las herramientas.
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/tools"
+        500:
+          description: Error interno.
+    post:
+      tags:
+        - Herramientas
+      summary: Registra una herramienta.
+      requestBody:
+        $ref: "#/components/requestBodies/tools"
+      responses:
+        201:
+          description: Creado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tools"
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+    put:
+      tags:
+        - Herramientas
+      summary: Edita una herramienta.
+      requestBody:
+        $ref: "#/components/requestBodies/tools"
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tools"
+        404:
+          description: No se encontró la herramienta.
+        400:
+          description: Solicitud malformada.
+        500:
+          description: Error interno.
+  /tools/id:
+    get:
+      tags:
+        - Herramientas
+      summary: Obtiene una herramienta con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tools"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró la herramienta.
+    delete:
+      tags:
+        - Herramientas
+      summary: Elimina una herramienta con id.
+      parameters:
+        - name: id
+          in: query
+          description: El id para buscar.
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tools"
+        400:
+          description: Id inválida.
+        404:
+          description: No se encontró la herramienta.
+components:
+  requestBodies:
+    user:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/user"
+      description: La información básica del usuario.
+      required: true
+    student:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/student"
+      description: La información del estudiante.
+      required: true
+    advisor:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/advisor"
+      description: La información sobre los estudiantes.
+      required: true
+    company:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/company"
+      description: La información sobre las compañías.
+      required: true
+    course:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/course"
+      description: La información sobre las carreras.
+      required: true
+    project:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/project"
+      description: La información sobre los proyectos.
+      required: true
+    department:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/department"
+      description: La información sobre los departamentos.
+      required: true
+    tools:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/tools"
+      description: La información sobre las herramientas.
+      required: true
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+          example: albert_einstein
+        password:
+          type: string
+          example: your_super_s3cr3t_p4ssw0rd
+        firstName:
+          type: string
+          example: Albert
+        middleName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          example: Einstein
+        curp:
+          type: string
+        email:
+          type: string
+          example: example@domain.me
+    student:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: "#/components/schemas/user"
+        controlNumber:
+          type: string
+        project:
+          $ref: "#/components/schemas/project"
+    advisor:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: "#/components/schemas/user"
+        rfc:
+          type: string
+        isIntern:
+          type: string
+          enum:
+            - "true"
+            - "false"
+        projects:
+          type: array
+          items:
+            $ref: "#/components/schemas/project"
+        companies:
+          type: array
+          items:
+            $ref: "#/components/schemas/company"
+        departments:
+          type: array
+          items:
+            $ref: "#/components/schemas/department"
+    company:
+      type: object
+      properties:
+        id:
+          type: integer
+        codename:
+          type: string
+        name:
+          type: string
+        size:
+          type: string
+          example: large
+        projects:
+          type: array
+          items:
+            $ref: "#/components/schemas/project"
+        advisors:
+          type: array
+          items:
+            $ref: "#/components/schemas/advisor"
+    course:
+      type: object
+      properties:
+        id:
+          type: integer
+        codename:
+          type: string
+        name:
+          type: string
+        students:
+          type: array
+          items:
+            $ref: "#/components/schemas/student"
+    project:
+      type: object
+      properties:
+        id:
+          type: integer
+        keyname:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        funding:
+          type: number
+        dateBegin:
+          type: string
+          format: date-time
+        dateEnd:
+          type: string
+          format: date-time
+          nullable: true
+        students:
+          type: array
+          items:
+            $ref: "#/components/schemas/student"
+        advisors:
+          type: array
+          items:
+            $ref: "#/components/schemas/advisor"
+        tools:
+          type: array
+          items:
+            $ref: "#/components/schemas/tools"
+    department:
+      type: object
+      properties:
+        id:
+          type: integer
+        codename:
+          type: string
+        name:
+          type: string
+        advisors:
+          type: array
+          items:
+            $ref: "#/components/schemas/advisor"
+    tools:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
