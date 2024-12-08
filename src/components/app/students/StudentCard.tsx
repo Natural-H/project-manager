@@ -1,6 +1,6 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
+import {Avatar, AvatarFallback} from "@/components/ui/avatar"
+import {Badge} from "@/components/ui/badge"
 import {Fingerprint, IdCard, Mail, MapPin, MoreVertical, Phone} from "lucide-react"
 import {
     DropdownMenu,
@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {Student} from "@/lib/Types";
 import {Button} from "@/components/ui/button";
-export function StudentCard({student} : {student: Student}){
+import Link from "next/link";
+
+export function StudentCard({student}: { student: Student }) {
     return (
         <Card key={student.id}>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -23,15 +25,19 @@ export function StudentCard({student} : {student: Student}){
                         <p className="text-sm text-muted-foreground">{student.user.username}</p>
                     </div>
                 </div>
-               <DropdownMenu>
+                <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreVertical className="h-4 w-4" />
+                            <MoreVertical className="h-4 w-4"/>
                             <span className="sr-only">Open menu</span>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Ver perfil completo</DropdownMenuItem>
+                        <Link href={`/app/students/${student.id}`}>
+                            <DropdownMenuItem>
+                                Ver perfil completo
+                            </DropdownMenuItem>
+                        </Link>
                         <DropdownMenuItem>Editar la información del estudiante</DropdownMenuItem>
                         <DropdownMenuItem>Contactar estudiante</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -47,21 +53,21 @@ export function StudentCard({student} : {student: Student}){
                 </div>
                 <div className="space-y-2 text-sm">
                     <div className="flex items-center">
-                        <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <Mail className="h-4 w-4 mr-2 text-muted-foreground"/>
                         {student.user.email}
                     </div>
                     <div className="flex items-center">
-                        <IdCard className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <IdCard className="h-4 w-4 mr-2 text-muted-foreground"/>
                         {student.user.curp}
                     </div>
                     <div className="flex items-center">
-                        <Fingerprint className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <Fingerprint className="h-4 w-4 mr-2 text-muted-foreground"/>
                         {student.controlNumber}
                     </div>
                 </div>
             </CardContent>
             <CardFooter>
-           </CardFooter>
+            </CardFooter>
         </Card>
     )
 }
