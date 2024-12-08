@@ -1,12 +1,10 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {Project, Student} from "@prisma/client";
 import {format} from "@formkit/tempo";
 
 export function ProjectCard({project} : {project: Project}) {
-    const status = "Completado"
     return (
         <Card className="max-w-[350px]">
             <CardHeader>
@@ -14,8 +12,8 @@ export function ProjectCard({project} : {project: Project}) {
                     <div className="flex gap-4">
                         <CardTitle>{project.name}</CardTitle>
                         <Badge
-                            variant={status === "Completado" ? "default" : status === "En progreso" ? "secondary" : "outline"}>
-                            {status}
+                            variant={project.isFinished ? "default" : "outline"}>
+                            {project.isFinished ? "Finalizado" : "En curso"}
                         </Badge>
                     </div>
                    <p className="text-muted-foreground mb-4">{project.description}</p>
@@ -31,7 +29,7 @@ export function ProjectCard({project} : {project: Project}) {
                 <div className="flex -space-x-2">
                     {project.students.map((student: Student, index: number) => (
                         <Avatar key={index} className="border-2 border-background">
-                            <AvatarFallback>A</AvatarFallback>
+                            <AvatarFallback>{student.user.firstName.charAt(0)}</AvatarFallback>
                         </Avatar>
                     ))}
                 </div>
