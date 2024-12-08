@@ -23,7 +23,7 @@ const items = [
     },
     {
         title: "Estudiantes",
-        url: "#",
+        url: "/app/students",
         icon: GraduationCap,
     },
     {
