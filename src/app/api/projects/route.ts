@@ -25,9 +25,7 @@ export async function POST(request: NextRequest) {
     const session = await auth()
     if (!session) return NextResponse.json("Not authorized", {status: 401})
 
-    const {id, ...data} = await request.json()
-    console.log(data)
-    if (id) return NextResponse.json({message: "Manually putting an id is not allowed"}, {status: 400})
+    const data = await request.json()
 
     try {
         const project = await prisma.project.create({data: {...data}})
