@@ -16,8 +16,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-    const {id, ...data} = await request.json()
-    if (id) return NextResponse.json({message: "Manually putting an id is not allowed"}, {status: 400})
+    const data = await request.json()
 
     try {
         const course = await prisma.course.create({data: {...data}})
