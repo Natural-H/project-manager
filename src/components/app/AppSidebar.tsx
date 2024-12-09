@@ -33,7 +33,7 @@ const items = [
     },
     {
         title: "Buscar",
-        url: "#",
+        url: "/app/search",
         icon: Search,
     },
     {
