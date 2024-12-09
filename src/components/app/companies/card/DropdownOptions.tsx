@@ -7,9 +7,10 @@ import {
     DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
-import {EditCompanyDialog} from "@/components/app/companies/EditCompanyDialog";
+import {EditCompanyDialog} from "@/components/app/companies/card/EditCompanyDialog";
 import {Company} from "@prisma/client";
 import {useState} from "react";
+import {CompanyProjects} from "@/components/app/companies/card/CompanyProjects";
 
 export function DropdownOptions({company}: { company: Company }) {
     return (
@@ -32,15 +33,15 @@ export function DropdownOptions({company}: { company: Company }) {
                             <DialogTitle>Editar organización</DialogTitle>
                             <DialogDescription className="flex flex-col">
                                 Rellena los campos para editar la organización
-                           </DialogDescription>
+                            </DialogDescription>
                         </DialogHeader>
-                       <EditCompanyDialog company={company}/>
+                        <EditCompanyDialog company={company}/>
                     </DialogContent>
                 </Dialog>
                 <Dialog>
                     <DialogTrigger>
                         <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-red-500">
-                           Eliminar organización
+                            Eliminar organización
                         </DropdownMenuItem>
                     </DialogTrigger>
                     <DialogContent>
@@ -58,17 +59,30 @@ export function DropdownOptions({company}: { company: Company }) {
                             <DialogClose asChild>
                                 <Button variant="outline">Cancelar</Button>
                             </DialogClose>
-                            <Button variant="destructive" onClick={async() => {
+                            <Button variant="destructive" onClick={async () => {
                                 await fetch(`http://localhost:3000/api/companies/${company.id}`, {
                                     method: 'DELETE'
                                 })
                                 window.location.reload()
                             }}>Eliminar</Button>
-                       </DialogFooter>
+                        </DialogFooter>
                     </DialogContent>
-
                 </Dialog>
-                <DropdownMenuItem>Ver proyectos</DropdownMenuItem>
+                <Dialog>
+                    <Dialog>
+                        <DialogTrigger>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                Ver proyectos
+                            </DropdownMenuItem>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Proyectos de esta organización</DialogTitle>
+                           </DialogHeader>
+                            <CompanyProjects company={company} />
+                        </DialogContent>
+                    </Dialog>
+                </Dialog>
             </DropdownMenuContent>
         </DropdownMenu>
 
