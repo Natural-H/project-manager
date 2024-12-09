@@ -38,6 +38,7 @@ const items = [
     },
     {
         title: "Configuración",
+        url: "/app/settings",
         icon: Settings,
     }
 ]
