@@ -3,8 +3,8 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Button} from "@/components/ui/button";
 import {MoreVertical} from "lucide-react";
 import {
-    Dialog,
-    DialogContent, DialogDescription, DialogHeader, DialogTitle,
+    Dialog, DialogClose,
+    DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
 import {EditCompanyDialog} from "@/components/app/companies/EditCompanyDialog";
@@ -20,11 +20,11 @@ export function DropdownOptions({company}: { company: Company }) {
                     <span className="sr-only">Abrir menú</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="flex flex-col">
                 <Dialog>
                     <DialogTrigger>
                         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                            Editar empresa
+                            Editar organización
                         </DropdownMenuItem>
                     </DialogTrigger>
                     <DialogContent>
@@ -37,7 +37,37 @@ export function DropdownOptions({company}: { company: Company }) {
                        <EditCompanyDialog company={company}/>
                     </DialogContent>
                 </Dialog>
-                <DropdownMenuItem>Eliminar empresa</DropdownMenuItem>
+                <Dialog>
+                    <DialogTrigger>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-red-500">
+                           Eliminar organización
+                        </DropdownMenuItem>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Eliminar organización</DialogTitle>
+                            <DialogDescription className="flex flex-col text-red-500">
+                                ¿Estás seguro de que deseas eliminar la organización?
+                            </DialogDescription>
+                            <span>
+                                Esta acción no se puede deshacer. Las organizaciones que tengan proyectos u asesores asignados no
+                                podrán ser eliminadas.
+                            </span>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancelar</Button>
+                            </DialogClose>
+                            <Button variant="destructive" onClick={async() => {
+                                await fetch(`http://localhost:3000/api/companies/${company.id}`, {
+                                    method: 'DELETE'
+                                })
+                                window.location.reload()
+                            }}>Eliminar</Button>
+                       </DialogFooter>
+                    </DialogContent>
+
+                </Dialog>
                 <DropdownMenuItem>Ver proyectos</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
