@@ -1,8 +1,12 @@
 import {prisma} from "@/app/prisma";
+import {auth} from "@/auth";
 import {NextRequest, NextResponse} from "next/server";
 import {Prisma} from "@prisma/client";
 
 export async function GET(request: Request, {params}: { params: Promise<{ id: string }> }) {
+    const session = await auth()
+    if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
+
     try {
         const student = await prisma.student.findUnique({
             where: {
@@ -27,6 +31,8 @@ export async function GET(request: Request, {params}: { params: Promise<{ id: st
 }
 
 export async function DELETE(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
+    const session = await auth()
+    if (!session) return NextResponse.json({message: "Not authorized"}, {status: 401})
     const id = Number((await params).id)
 
     try {
