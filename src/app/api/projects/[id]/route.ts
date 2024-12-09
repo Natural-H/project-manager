@@ -17,7 +17,11 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
                         user: true
                     }
                 },
-                advisor: true,
+                advisor: {
+                    include: {
+                        user: true
+                    }
+                },
                 tools: true,
                 company: true
             }

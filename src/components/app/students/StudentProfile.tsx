@@ -17,6 +17,7 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
+import {ReturnButton} from "@/components/app/ReturnButton";
 
 export function StudentProfile({student}: { student: Student }) {
     const router = useRouter()
@@ -91,11 +92,8 @@ export function StudentProfile({student}: { student: Student }) {
 
     return (
         <div className="container mx-auto py-3">
-            <Button variant="ghost" className="mb-6" onClick={() => router.back()}>
-                <ArrowLeft className="mr-2 h-4 w-4"/>
-                Regresar a lista de estudiantes
-            </Button>
-            <Card className="max-w-2xl mx-auto">
+            <ReturnButton page='a lista de estudiantes'/>
+           <Card className="max-w-2xl mx-auto">
                 <CardHeader className="flex gap-4">
                     <CardTitle className="text-2xl">{isEditing ? "Editar" : "Ver"} perfil de estudiante</CardTitle>
                     <div className="flex gap-4 items-center">
