@@ -9,7 +9,7 @@ export async function loginAction(formData: any) {
         await signIn('credentials', {
             email: formData.get('email'),
             password: pwHash,
-            redirectTo: '/',
+            redirectTo: '/app/projects',
         })
     } catch (error) {
         if (error instanceof AuthError) {

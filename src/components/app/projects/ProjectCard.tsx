@@ -9,12 +9,13 @@ export function ProjectCard({project}: { project: Project }) {
     console.log(project.keyname, project.isFinished)
     return (
         <Link href={`/app/projects/${project.id}`}>
-            <Card className="max-w-[350px] hover:shadow-lg transition-shadow ease-in-out">
+            <Card className="hover:shadow-lg transition-shadow ease-in-out w-[400px] h-[280px]">
                 <CardHeader>
                     <div className="flex justify-between items-start flex-col">
                         <div className="flex gap-4">
-                            <CardTitle>{project.name}</CardTitle>
+                            <CardTitle className="overflow-clip text-ellipsis w-full">{project.name}</CardTitle>
                             <Badge
+                                className="text-nowrap"
                                 variant={project.isFinished === "true" ? "default" : "outline"}>
                                 {project.isFinished === "true" ? "Finalizado" : "En curso"}
                             </Badge>
