@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     if (!session) return NextResponse.json("Not authorized", {status: 401})
 
     const {id, ...data} = await request.json()
+    console.log(data)
     if (id) return NextResponse.json({message: "Manually putting an id is not allowed"}, {status: 400})
 
     try {
