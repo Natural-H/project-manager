@@ -1,12 +1,14 @@
 import {Project} from "@/lib/ProjectType";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {User} from "lucide-react";
+import {AddAdvisorDialog} from "@/components/app/projects/project/AddAdvisorDialog";
 
 export function ProjectAdvisorsCard({project}: {project: Project}) {
    return (
        <Card>
-           <CardHeader>
+           <CardHeader className="flex items-center justify-between flex-row p-5">
                <CardTitle>Asesores</CardTitle>
+               <AddAdvisorDialog projectId={project.id} />
            </CardHeader>
            <CardContent>
                {

@@ -11,22 +11,18 @@ import {
 import {Plus} from "lucide-react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import { useEffect, useState} from "react";
-import {Student} from "@/lib/types";
+import {Advisor} from "@/lib/AdvisorType";
 
 
-export function AddStudentDialog({projectId}: {projectId: number}) {
-    const [students, setStudents] = useState<Student[]>([])
+export function AddAdvisorDialog({projectId}: {projectId: number}) {
+    const [advisors, setAdvisors] = useState<Advisor[]>([])
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        function getStudentsWithNullProjectId(data: Student[]) {
-            return data.filter(student => student.projectId === null);
-        }
-
         const fetchStudents = async () => {
-            const res = await fetch('/api/students')
+            const res = await fetch('/api/advisors')
             const data = await res.json()
-            setStudents(getStudentsWithNullProjectId(data))
+            setAdvisors(data)
         }
         fetchStudents()
     }, [projectId])
@@ -37,7 +33,7 @@ export function AddStudentDialog({projectId}: {projectId: number}) {
         const formData = new FormData(form)
         const data = Object.fromEntries(formData)
         console.log(data)
-        const assignStudent = await fetch(`http://localhost:3000/api/students/${data.student}/project`, {
+        const assignAdvisor= await fetch(`http://localhost:3000/api/advisors/${data.advisor}/projects`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -46,7 +42,7 @@ export function AddStudentDialog({projectId}: {projectId: number}) {
                 id: projectId
             })
         })
-        if(!assignStudent.ok) {
+        if(!assignAdvisor.ok) {
             setError(true)
             return
         }
@@ -56,47 +52,47 @@ export function AddStudentDialog({projectId}: {projectId: number}) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-               <Button variant="outline" size="icon" className="m-0">
+                <Button variant="outline" size="icon" className="m-0">
                     <Plus />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Asignar estudiante</DialogTitle>
+                    <DialogTitle>Asignar asesor</DialogTitle>
                     <DialogDescription className='flex flex-col'>
-                        Seleccione un estudiante para asignar al proyecto.
+                        Seleccione un asesor para asignar al proyecto.
                         {
                             error && <span className='text-red-500'>
-                                Error al asignar estudiante
+                                Error al asignar asesor
                             </span>
                         }
-                   </DialogDescription>
+                    </DialogDescription>
                 </DialogHeader>
                 {
                     // TODO: Change this component to a Combobox
                 }
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                    <Select name="student">
+                    <Select name="advisor">
                         <SelectTrigger>
-                            <SelectValue placeholder="Alumno" />
+                            <SelectValue placeholder="Asesor" />
                         </SelectTrigger>
                         <SelectContent>
                             {
-                                students.map(student => (
-                                    <SelectItem key={student.id} value={student.id.toString()}>
-                                        {student.user.firstName} {student.user.lastName}
+                                advisors.map(advisor => (
+                                    <SelectItem key={advisor.id} value={advisor.id.toString()}>
+                                        {advisor.user.firstName} {advisor.user.lastName}
                                     </SelectItem>
                                 ))
                             }
                         </SelectContent>
                         <div className="flex justify-end">
-                            <Button type="submit">Asignar estudiante</Button>
+                            <Button type="submit">Asignar asesor</Button>
                         </div>
 
                     </Select>
 
                 </form>
-          </DialogContent>
+            </DialogContent>
         </Dialog>
     )
 }
