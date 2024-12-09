@@ -19,12 +19,12 @@ export function AddAdvisorDialog({projectId}: {projectId: number}) {
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        const fetchStudents = async () => {
+        const fetchAdvisors = async () => {
             const res = await fetch('/api/advisors')
             const data = await res.json()
             setAdvisors(data)
         }
-        fetchStudents()
+        fetchAdvisors()
     }, [projectId])
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
