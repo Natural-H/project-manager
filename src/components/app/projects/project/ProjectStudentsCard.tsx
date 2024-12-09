@@ -1,12 +1,14 @@
 import {Project} from "@/lib/ProjectType";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {AddStudentDialog} from "@/components/app/projects/project/AddStudentDialog";
 
 export function ProjectStudentsCard({project}: { project: Project }) {
     return (
          <Card>
-                <CardHeader>
+                <CardHeader className="flex items-center justify-between flex-row p-5">
                     <CardTitle>Estudiantes</CardTitle>
+                    <AddStudentDialog projectId={project.id} />
                 </CardHeader>
                 <CardContent>
                     {
