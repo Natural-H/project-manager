@@ -14,7 +14,7 @@ export async function AllProjectsSection() {
     const projects = await data.json()
     if (!projects) return <p>No hay proyectos</p>
     return (
-        <div className='flex-1 w-full p-5 flex gap-2'>
+        <div className='flex-1 w-full p-5 flex gap-2 flex-wrap'>
             {
                 projects.map((project: Project) => (
                     <ProjectCard project={project} key={project.id} />
