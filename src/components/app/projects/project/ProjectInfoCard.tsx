@@ -3,13 +3,15 @@ import {Badge} from "@/components/ui/badge";
 import {BriefcaseBusiness, CalendarIcon, DollarSign, PenToolIcon as Tool} from "lucide-react";
 import {format} from "@formkit/tempo";
 import {Project} from "@/lib/ProjectType";
+import {DropdownOptions} from "@/components/app/projects/project/DropdownOptions";
 
 export function ProjectInfoCard({project}: {project: Project}) {
     return (
 
         <Card>
-            <CardHeader>
+            <CardHeader className="flex justify-between flex-row items-center">
                 <CardTitle>Detalles del proyecto</CardTitle>
+                <DropdownOptions project={project} />
             </CardHeader>
             <CardContent className="space-y-2">
                 <p><strong>Nombre:</strong> {project.name}</p>

@@ -15,8 +15,8 @@ export function ProjectCard({project}: { project: Project }) {
                         <div className="flex gap-4">
                             <CardTitle>{project.name}</CardTitle>
                             <Badge
-                                variant={project.isFinished === "false" ? "default" : "outline"}>
-                                {project.isFinished === "false" ? "Finalizado" : "En curso"}
+                                variant={project.isFinished === "true" ? "default" : "outline"}>
+                                {project.isFinished === "true" ? "Finalizado" : "En curso"}
                             </Badge>
                         </div>
                         <p className="text-muted-foreground mb-4">{project.description}</p>

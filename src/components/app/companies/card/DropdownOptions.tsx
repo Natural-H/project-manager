@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import {EditCompanyDialog} from "@/components/app/companies/card/EditCompanyDialog";
 import {Company} from "@prisma/client";
-import {useState} from "react";
 import {CompanyProjects} from "@/components/app/companies/card/CompanyProjects";
 
 export function DropdownOptions({company}: { company: Company }) {
