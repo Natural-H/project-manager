@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {Search, Briefcase, FolderOpen, GraduationCap} from 'lucide-react'
+import Link from "next/link";
 
 // Define a type for our search results
 type SearchResult = {
@@ -53,9 +54,11 @@ export default function SearchPage() {
                     Buscar
                 </Button>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 flex flex-col">
                 {searchResults.map((result, index) => (
-                    <Card key={index}>
+
+                    <Link key={index} href={`/app/${result.kind}s/${result.id}`}>
+                        <Card className="hover:shadow-lg transition-shadow ease-in-out">
                         <CardContent className="flex items-center p-4">
                             <Badge variant="outline" className="mr-4">
                                 {getIcon(result.kind)}
@@ -66,7 +69,7 @@ export default function SearchPage() {
                             </div>
                         </CardContent>
                     </Card>
-                ))}
+                    </Link>               ))}
                 {searchResults.length === 0 && searchTerm && (
                     <p className="text-center text-muted-foreground">No se encontraron resultados</p>
                 )}
