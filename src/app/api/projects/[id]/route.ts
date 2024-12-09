@@ -18,7 +18,8 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
                     }
                 },
                 advisor: true,
-                tools: true
+                tools: true,
+                company: true
             }
         })
 
